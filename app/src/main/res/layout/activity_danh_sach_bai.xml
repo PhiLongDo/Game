@@ -20,8 +20,12 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/lvDsBai"
+    <GridView
+        android:id="@+id/gvBai"
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="3dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

@@ -37,6 +37,15 @@ public class LaBaiAdapter extends BaseAdapter {
         return 0;
     }
 
+    public void delateItem(String ten){
+        for (int i = 0; i < list.size() ; i++) {
+            if (list.get(i).getTen().equalsIgnoreCase(ten)) {
+                list.remove(i);
+                break;
+            }
+        }
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ListLaBai listLaBai = null;

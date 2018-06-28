@@ -1,47 +1,86 @@
 package com.example.windows10.gamebaicao;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class DanhSachBaiActivity extends AppCompatActivity {
 
-    ListView lv;
+    GridView gv;
     private ArrayList<LaBai> CacLaBai = new ArrayList<>();
     LaBaiAdapter adp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_danh_sach_bai);
 
-        lv = (ListView) findViewById(R.id.lvDsBai);
+        gv = (GridView) findViewById(R.id.gvBai);
         xaoBai();
         adp = new LaBaiAdapter(CacLaBai,DanhSachBaiActivity.this);
-        lv.setAdapter(adp);
+        gv.setAdapter(adp);
 
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                LaBai lb = (LaBai) parent.getItemAtPosition(position);
-                AlertDialog.Builder tb = new AlertDialog.Builder(DanhSachBaiActivity.this);
-                tb.setTitle("Thông tin");
-                tb.setMessage(lb.getTen()+" "+lb.getSoNut());
-                tb.setPositiveButton("Dong", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+//        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                LaBai lb = (LaBai) parent.getItemAtPosition(position);
+//                AlertDialog.Builder tb = new AlertDialog.Builder(DanhSachBaiActivity.this);
+//                tb.setTitle("Thông tin");
+//                tb.setMessage(lb.getTen()+" "+lb.getSoNut());
+//                tb.setPositiveButton("Dong", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                tb.show();
+//                return false;
+//            }
+//        });
+        registerForContextMenu(gv);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        View v = ((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).targetView;
+        String ten = ((TextView)v.findViewById(R.id.tvTen)).getText().toString();
+        String sonut = ((TextView)v.findViewById(R.id.tvSoNut)).getText().toString();
+        if (item.getItemId() == R.id.mnXem){
+            AlertDialog.Builder tb = new AlertDialog.Builder(DanhSachBaiActivity.this);
+            tb.setTitle("Thông tin");
+            tb.setMessage(ten+" "+sonut);
+            tb.setPositiveButton("Dong", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
                     }
-                });
-                tb.show();
-                return false;
-            }
-        });
+            });
+            tb.show();
+        }
+
+        if (item.getItemId() == R.id.mnXoa){
+            adp.delateItem(ten);
+            adp.notifyDataSetChanged();
+        }
+        return true;
     }
 
     private void xaoBai() {
